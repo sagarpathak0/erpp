@@ -31,9 +31,9 @@ interface Student {
   program: string;
   category: string;
   campus: string;
-  mother? : string;
-  father? : string;
-  guardian? :string;
+  mother?: string;
+  father?: string;
+  guardian?: string;
   results: SemesterResult[];
   abc_id: string;
 }
@@ -170,7 +170,7 @@ const Home: React.FC = () => {
           father: "father", //to be updated
           results: [newSemesterResult],
           abc_id: "1234", //to be updated
-          guardian:"Guardian" //to be updated
+          guardian: "Guardian", //to be updated
         });
         newSemesterResult.sgpa = sgpa_calc(newSemesterResult.marks);
         newSemesterResult.sem_grade = sem_grade(newSemesterResult.sgpa);
@@ -238,7 +238,11 @@ const Home: React.FC = () => {
       <div key={result.semester} className="page-break">
         <div className="flex w-full pt-10">
           <div className="flex w-1/4 justify-center items-center">
-            <img src="/dseu-logo.png" alt="DSEU-LOGO" className="w-[29%] h-[60%] "/>
+            <img
+              src="/dseu-logo.png"
+              alt="DSEU-LOGO"
+              className="w-[29%] h-[60%] "
+            />
           </div>
           <div>
             <div className="text-center flex flex-col mx-auto p-1 text-[#0072B9]">
@@ -249,8 +253,8 @@ const Home: React.FC = () => {
                 Delhi Skill & Entrepreneurship University
               </div>
               <div className="text-dseublue text-md font-extrabold font-serif">
-                (A State University Established under Govt. of NCT of Delhi Act 04
-                of 2020)
+                (A State University Established under Govt. of NCT of Delhi Act
+                04 of 2020)
               </div>
             </div>
             <div className="text-center flex flex-col mx-auto">
@@ -267,97 +271,197 @@ const Home: React.FC = () => {
         </div>
 
         <div className="border-[1px] px-4 mx-4 pt-16">
-          
-           
-        <div className="student-info mb-4 flex justify-center">
-          <div className="w-[80%] ">
-            <div className="flex justify-between">
-              <div className="flex-col">
-                <div className=" p-0">Student Name : <span className="font-bold uppercase">{student.name}</span></div>
-                <div className=" p-0  ">Roll No. : <span className="font-bold">{student.rollno}</span></div>
+          <div className="student-info mb-4 flex justify-center">
+            <div className="w-[80%] ">
+              <div className="flex justify-between">
+                <div className="flex-col">
+                  <div className=" p-0">
+                    Student Name :{" "}
+                    <span className="font-bold uppercase">{student.name}</span>
+                  </div>
+                  <div className=" p-0  ">
+                    Roll No. :{" "}
+                    <span className="font-bold">{student.rollno}</span>
+                  </div>
+                </div>
+                <div className="flex-col">
+                  {student.father || student.mother ? (
+                    <div>
+                      {" "}
+                      {student.father ? (
+                        <div className="p-0">
+                          Father's Name :{" "}
+                          <span className="font-bold">{student.father}</span>
+                        </div>
+                      ) : (
+                        ""
+                      )}{" "}
+                      {student.mother ? (
+                        <div className="p-0">
+                          Mother's Name :{" "}
+                          <span className="font-bold">{student.mother}</span>
+                        </div>
+                      ) : (
+                        ""
+                      )}{" "}
+                    </div>
+                  ) : (
+                    <div className="p-0">
+                      Guadian's Name :{" "}
+                      <span className="font-bold">{student.guardian}</span>
+                    </div>
+                  )}
+                  {/* <div className=" p-2">Mother's Name : {student.mother}</div> */}
+                </div>
               </div>
-              <div className="flex-col">
-                {
-                  student.father || student.mother ? <div> {student.father ? <div className="p-0">Father's Name : <span className="font-bold">{student.father}</span></div>:""}  {student.mother? <div className="p-0">Mother's Name : <span className="font-bold">{student.mother}</span></div> : ""} </div> : <div className="p-0">Guadian's Name : <span className="font-bold" >{student.guardian}</span></div>
-                }
-                {/* <div className=" p-2">Mother's Name : {student.mother}</div> */}
+            </div>
+          </div>
+
+          <div className="result-table mb-4 w-full flex justify-center ">
+            <div className="w-[90%] border border-collapse">
+              {/* Header */}
+              <div className="flex">
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                  S.No
+                </div>
+                <div className="border text-[11px] p-[6px] w-[20%] flex justify-center">
+                  Course Code
+                </div>
+                <div className="border text-[11px] p-[6px] w-[30%] flex justify-center">
+                  Course Name
+                </div>
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                  Credit
+                </div>
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                  Credit Earned
+                </div>
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                  Grade Point
+                </div>
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                  Grade
+                </div>
+              </div>
+
+              {/* Body */}
+              {result.marks.map((mark, index) => (
+                <div className="flex" key={index}>
+                  <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
+                    {index + 1}
+                  </div>
+                  <div className="border text-[10px] p-[6px] w-[20%]">
+                    {mark.course_code}
+                  </div>
+                  <div className="border text-[10px] p-[6px] w-[30%]">
+                    {mark.course_name}
+                  </div>
+                  <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
+                    {mark.credit}
+                  </div>
+                  <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
+                    {mark.grade_point >= 4 ? mark.credit : 0}
+                  </div>
+                  <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
+                    {mark.grade_point}
+                  </div>
+                  <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
+                    {mark.grade}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="summary-table w-full flex justify-center ">
+            <div className="flex flex-col w-[90%] border border-collapse">
+              {/* Header */}
+              <div className="flex">
+                <div className="border w-[14.28%] text-[11px] p-2">
+                  <div className="flex w-full h-full justify-center items-center">
+                    Credits earned in this semester
+                  </div>
+                </div>
+                <div className="border w-[14.28%] text-[11px] p-2">
+                  <div className="flex w-full h-full justify-center items-center">
+                    Total credits as on date
+                  </div>
+                </div>
+                <div className="border w-[28.56%] flex flex-col">
+                  <div className="text-[11px] p-2">
+                    <div className="flex w-full h-full justify-center items-center">
+                      SGPA
+                    </div>
+                  </div>
+                  <div className="flex justify-evenly">
+                    <div className="border w-[50%] text-[11px] p-2">
+                      <div className="flex w-full h-full justify-center items-center">
+                        Earned
+                      </div>
+                    </div>
+                    <div className="border w-[50%] text-[11px] p-2">
+                      <div className="flex w-full h-full justify-center items-center">
+                        Grade letter
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="border w-[28.56%] flex flex-col">
+                  <div className="text-[11px] p-2">
+                    <div className="flex w-full h-full justify-center items-center">
+                      CGPA
+                    </div>
+                  </div>
+                  <div className="flex justify-evenly">
+                    <div className="border w-[50%] text-[11px] p-2">
+                      <div className="flex w-full h-full justify-center items-center">
+                        Earned
+                      </div>
+                    </div>
+                    <div className="border w-[50%] text-[11px] p-2">
+                      <div className="flex w-full h-full justify-center items-center">
+                        Grade letter
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="border flex-1 text-[11px] p-2">
+                  <div className="flex w-full h-full justify-center items-center">
+                    Grading System
+                  </div>
+                </div>
+              </div>
+
+              {/* Body */}
+              <div className="flex">
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  30
+                </div>
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  -
+                </div>
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  {result.sgpa}
+                </div>
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  {result.sem_grade}
+                </div>
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  -
+                </div>
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  -
+                </div>
+                <div className="border flex-1 text-[10px] p-2 flex justify-center">
+                  ABS
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div className="result-table mb-4 w-full flex justify-center ">
-        <div className="w-[90%] border border-collapse">
-  {/* Header */}
-  <div className="flex">
-    <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">S.No</div>
-    <div className="border text-[11px] p-[6px] w-[20%] flex justify-center">Course Code</div>
-    <div className="border text-[11px] p-[6px] w-[30%] flex justify-center">Course Name</div>
-    <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">Credit</div>
-    <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">Credit Earned</div>
-    <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">Grade Point</div>
-    <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">Grade</div>
-  </div>
-
-  {/* Body */}
-  {result.marks.map((mark, index) => (
-    <div className="flex" key={index}>
-      <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">{index + 1}</div>
-      <div className="border text-[10px] p-[6px] w-[20%]">{mark.course_code}</div>
-      <div className="border text-[10px] p-[6px] w-[30%]">{mark.course_name}</div>
-      <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">{mark.credit}</div>
-      <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
-        {mark.grade_point >= 4 ? mark.credit : 0}
       </div>
-      <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">{mark.grade_point}</div>
-      <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">{mark.grade}</div>
-    </div>
-  ))}
-</div>
-
-        </div>
-
-        <div className="summary-table w-full flex justify-center ">
-        <div className="flex flex-col w-[90%] border border-collapse">
-  {/* Header */}
-  <div className="flex">
-    <div className="border w-[14.28%] text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Credits earned in this semester</div></div>
-    <div className="border w-[14.28%] text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Total credits as on date</div></div>
-    <div className="border w-[28.56%] flex flex-col">
-      <div className="text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">SGPA</div></div>
-      <div className="flex justify-evenly">
-        <div className="border w-[50%] text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Earned</div></div>
-        <div className="border w-[50%] text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Grade letter</div></div>
-      </div>
-    </div>
-    <div className="border w-[28.56%] flex flex-col">
-      <div className="text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">CGPA</div></div>
-      <div className="flex justify-evenly">
-        <div className="border w-[50%] text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Earned</div></div>
-        <div className="border w-[50%] text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Grade letter</div></div>
-      </div>
-    </div>
-    <div className="border flex-1 text-[11px] p-2"><div className="flex w-full h-full justify-center items-center">Grading System</div></div>
-  </div>
-  
-  {/* Body */}
-  <div className="flex">
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">30</div>
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">-</div>
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">{result.sgpa}</div>
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">{result.sem_grade}</div>
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">-</div>
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">-</div>
-    <div className="border flex-1 text-[10px] p-2 flex justify-center">ABS</div>
-  </div>
-</div>
-
-        </div>
-      </div>
-      </div>    
     ));
   };
-
 
   return (
     <div className="p-4">
