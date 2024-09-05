@@ -10,7 +10,7 @@ interface Mark {
   course_name: string;
   credit: number;
   full_mark: number;
-  marks_obtained: number | null;
+  marks_obtained: number | string | null;
   date_of_exam: string;
   grade_point: number;
   grade: string;
@@ -38,22 +38,30 @@ interface Student {
   abc_id: string;
 }
 
-function eval_grade(gp: number) {
-  if (gp == 10) return "O";
-  else if (gp == 9) return "A+";
-  else if (gp == 8) return "A";
-  else if (gp == 7) return "B+";
-  else if (gp == 6) return "B";
-  else if (gp == 5) return "C";
-  else if (gp == 4) return "P";
-  else return "F";
+function eval_grade(gp: number, credit : number) {
+  if (credit) {
+    if (gp == 10) return "O";
+    else if (gp == 9) return "A+";
+    else if (gp == 8) return "A";
+    else if (gp == 7) return "B+";
+    else if (gp == 6) return "B";
+    else if (gp == 5) return "C";
+    else if (gp == 4) return "P";
+    else return "F";
+  } else {
+    if (gp >=4){
+      return "S";
+    } else {
+      return "N"
+    }
+  }
 }
 
 function sgpa_calc(marks: Mark[]) {
   let total_credit = 0;
   let ci_pi = 0;
   marks.map((mark) => {
-    total_credit += mark.credit;
+    total_credit += mark.grade_point? mark.credit : 0;
     ci_pi += mark.credit * mark.grade_point;
   });
   return total_credit > 0 ? parseFloat((ci_pi / total_credit).toFixed(2)) : 0;
@@ -129,7 +137,7 @@ const Home: React.FC = () => {
         marks_obtained: row["Mark Obt"] ? parseFloat(row["Mark Obt"]) : null,
         date_of_exam: row["Date of Exam"],
         grade_point: eval_gp(parseFloat(row["Mark Obt"] || 0)),
-        grade: eval_grade(eval_gp(parseFloat(row["Mark Obt"] || 0))),
+        grade: eval_grade(eval_gp(parseFloat(row["Mark Obt"] || 0)),parseFloat(row["Credit"])),
       };
 
       if (student) {
@@ -204,7 +212,9 @@ const Home: React.FC = () => {
 
     for (var k = 5; k < data.length; k++) {
       const val = Object.values(data[k]);
+      console.log(val)
       for (var i = 0; i < subjectCodes.length; i++) {
+        let flag = 0;
         let obj: { [key: string]: any } = {};
         for (var j = 0; j < 14; j++) {
           if (j <= 5) {
@@ -224,10 +234,19 @@ const Home: React.FC = () => {
           } else if (j == 8) {
             obj[newHeaders[j]] = subjectNames[i];
           } else if (j == 9) {
-            obj[newHeaders[j]] = val[6 + i];
+            if (val[6+i]){
+              obj[newHeaders[j]] = val[6 + i];
+            }else{
+              flag=1
+            }
           }
         }
-        updatedData.push(obj);
+        if(flag){
+          flag = 0
+          continue;
+        } else {
+          updatedData.push(obj) 
+        }
       }
     }
     return updatedData;
@@ -235,7 +254,7 @@ const Home: React.FC = () => {
 
   const renderStudentResults = (student: Student) => {
     return student.results.flatMap((result) => (
-      <div key={result.semester} className="page-break">
+      <div key={result.semester} className="page-break my-4">
         <div className="flex w-full pt-10">
           <div className="flex w-1/4 justify-center items-center">
             <img
@@ -270,7 +289,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-[1px] px-4 mx-4 pt-16">
+        <div className="border-[1px] px-4 mx-4 pt-4 ">
           <div className="student-info mb-4 flex justify-center">
             <div className="w-[80%] ">
               <div className="flex justify-between">
@@ -291,7 +310,7 @@ const Home: React.FC = () => {
                       {student.father ? (
                         <div className="p-0">
                           Father's Name :{" "}
-                          <span className="font-bold">{student.father}</span>
+                          <span className="font-bold uppercase">{student.father}</span>
                         </div>
                       ) : (
                         ""
@@ -299,7 +318,7 @@ const Home: React.FC = () => {
                       {student.mother ? (
                         <div className="p-0">
                           Mother's Name :{" "}
-                          <span className="font-bold">{student.mother}</span>
+                          <span className="font-bold uppercase">{student.mother}</span>
                         </div>
                       ) : (
                         ""
@@ -321,26 +340,26 @@ const Home: React.FC = () => {
             <div className="w-[90%] border border-collapse">
               {/* Header */}
               <div className="flex">
-                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center font-bold">
                   S.No
                 </div>
-                <div className="border text-[11px] p-[6px] w-[20%] flex justify-center">
+                <div className="border text-[11px] p-[6px] w-[20%] flex justify-center font-bold">
                   Course Code
                 </div>
-                <div className="border text-[11px] p-[6px] w-[30%] flex justify-center">
+                <div className="border text-[11px] p-[6px] w-[30%] flex justify-center font-bold">
                   Course Name
                 </div>
-                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center font-bold">
                   Credit
                 </div>
-                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center font-bold">
                   Credit Earned
                 </div>
-                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
-                  Grade Point
-                </div>
-                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center">
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center font-bold">
                   Grade
+                </div>
+                <div className="border text-[11px] p-[6px] w-[10%] flex justify-center font-bold">
+                  Grade Point
                 </div>
               </div>
 
@@ -363,17 +382,17 @@ const Home: React.FC = () => {
                     {mark.grade_point >= 4 ? mark.credit : 0}
                   </div>
                   <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
-                    {mark.grade_point}
+                    {mark.grade}
                   </div>
                   <div className="border text-[10px] p-[6px] w-[10%] flex justify-center">
-                    {mark.grade}
+                    {mark.credit ? mark.grade_point : "-"}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="summary-table w-full flex justify-center ">
+          <div className="summary-table w-full flex justify-center bottom-0 ">
             <div className="flex flex-col w-[90%] border border-collapse">
               {/* Header */}
               <div className="flex">
@@ -464,24 +483,32 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <FileUploadButton onConfirm={handleFileConfirmed} />
-      {isSubmitted && studentDataJSON && (
-        <div ref={componentRef}>
-          {studentDataJSON.map((student) => renderStudentResults(student))}
+    <>
+      <div className="bg-[#dfdede]"></div>
+      <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px] h-auto min-h-screen">
+        <div className="bg-blue-800 py-2 px-2 sm:mx-8 rounded shadow mt-28">
+          <h1 className="text-2xl text-white font-bold text-center">Student Result</h1>
         </div>
-      )}
+        <div className= "p-5">
+        <FileUploadButton onConfirm={handleFileConfirmed} />
+        </div>
       {isSubmitted && studentDataJSON && (
         <ReactToPrint
           trigger={() => (
-            <Button variant="contained" color="primary">
-              Print
+            <Button className="ml-8" variant="contained" color="primary">
+              Print PDF
             </Button>
           )}
           content={() => componentRef.current!}
         />
       )}
-    </div>
+      {isSubmitted && studentDataJSON && (
+        <div ref={componentRef} >
+          {studentDataJSON.map((student) => renderStudentResults(student))}
+        </div>
+      )}
+      </div>
+    </>
   );
 };
 
